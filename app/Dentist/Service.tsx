@@ -3,22 +3,12 @@ import './Service.css';
 import logo from "../images/icon.png"
 import Image from 'next/image';
 import Link from 'next/link';
-// import Btz from '../Button/page'
-import Header from '@/componets/navbar';
-import Footer from '@/componets/footer'
-import Button from '@/componets/Button'
+
 
 function Service() {
   return (
-    <>
-    <Header/>
-     <div className="zigege">
-      <div>
-      <img 
-        src="https://i.pinimg.com/564x/0a/9b/05/0a9b055d7582f2104d245e5e21a7d920.jpg" 
-        alt="Hospital" 
-        className="hospital-image"
-      />
+    <div className="zigege">
+      <div className='tryit'>
       
       </div>
       <div className='sevdiv'>
@@ -29,23 +19,20 @@ function Service() {
       />
 
       <div className="service-description">
-        <h2 className="kulandila">WELCOME TO THE OPD SERVICE</h2>
-        <p className="mawu">This is the doctors office each and ever client is warmly Welcome
-                to this office and every client is helped accordingly. get any
-                medical help from this office</p>
-       
+        <h2 className="kulandila">WELCOME TO THE DENTAL SERVICE</h2>
+        <p className="mawu">At Liwonde clinic we are dedicated to providing exceptional dental care tailored to your individual needs.
+         Our experienced team of dental professionals offers a wide range of services to ensure that you achieve and maintain a healthy, beautiful smile. Here are some of the services we provide:</p>
+        <span id='spanid'>Routine Check-ups and Cleanings: Keep your smile bright and healthy with regular check-ups and professional cleanings</span>
+        <span id='spanid'>Extractions: When necessary, our gentle dentists can perform tooth extractions with care and precision.</span>
+        <span id='spanid'>Dental Implants: Regain confidence in your smile with permanent tooth replacement solutions using state-of-the-art dental implants.</span>
       </div>
-     
       </div>
      <Link href="/Appointment">
      <div className='divyabt'>
-      <Button/>
+   
      </div>
      </Link>
     </div>
-    <Footer/>
-    </>
-   
   );
 }
 

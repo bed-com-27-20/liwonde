@@ -57,7 +57,7 @@ export default function Header() {
             <FontAwesomeIcon icon={faUserFriends} className="my-icon1" />
             Patients & Visitors
           </a>
-          <a className="links" href="/not-found">
+          <a className="links" href="/departments">
             <FontAwesomeIcon icon={faTools} className="my-icon1" /> Departments
           </a>
           <a className="links" href="/not-found">
@@ -83,7 +83,7 @@ export default function Header() {
           {" "}
           <FontAwesomeIcon icon={faUserDoctor} className="my-icon1" /> Staff
         </a>
-        <a className="links" href="/notFound">
+        <a className="links" href="/departments">
           {" "}
           <FontAwesomeIcon icon={faHospital} className="my-icon1" />
           Departments

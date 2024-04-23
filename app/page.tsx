@@ -10,6 +10,7 @@ import ScrollToTopButton from "./Scroll/scroll";
 import FAQ from "./Home/Faq";
 import BottomSection from "./Home/BottomSection";
 import Footer from "@/componets/footer";
+import Navbar from "@/componets/navbar";
 
 const posts = [
   {
@@ -25,7 +26,7 @@ const posts = [
       role: 'Cancer Patient',
       href: '#',
       imageUrl:
-        'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+        'https://i.pinimg.com/564x/01/f4/c8/01f4c8851b0b58aa937541b8827e5feb.jpg',
     },
   },
   {
@@ -42,7 +43,7 @@ const posts = [
         role: 'Surgeon',
       
         imageUrl:
-          'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+          'https://i.pinimg.com/564x/e8/f9/64/e8f964f2a79487c2bc9515b193be19e3.jpg',
       },
     },
     {
@@ -59,7 +60,7 @@ const posts = [
         role: 'Patient',
       
         imageUrl:
-          'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+          'https://i.pinimg.com/564x/72/9c/46/729c4627467328e2f0a78d5a5c7d6048.jpg',
       },
     },
     
