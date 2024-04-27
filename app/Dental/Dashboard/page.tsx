@@ -17,7 +17,7 @@ export default function Dental(){
                 <header>Dental</header>
                 <ul>
                     <li><a href="#">Profile</a></li>
-                    <li><a href="#">Records</a></li>
+                    <li><a href="#">History</a></li>
                     <li><a href="Sale">Sales</a></li>
                     <li><a href="Login">Logout</a></li>
                 </ul>
@@ -39,7 +39,7 @@ export default function Dental(){
             </div>
             <div className="button-container">
                 <div>
-                    <button className="button">View Table</button>
+                    <button className="button">Todays Data</button>
                 </div>
                 <div>
                     <a href="Record">

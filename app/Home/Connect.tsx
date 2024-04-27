@@ -27,7 +27,7 @@ const posts = [
         datetime: '2020-03-16',
         category: { title: 'Liwonde' },
         author: {
-          name: 'Dr. James Phiri"',
+          name: 'Dr. E.Lunzu',
           role: 'Surgeon',
         
           imageUrl:

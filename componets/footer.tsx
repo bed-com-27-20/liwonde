@@ -43,8 +43,8 @@ export default function Footer() {
   	 		<div className="footer-col">
   	 			<h4>Contact Us</h4>
   	 			<ul>
-  	 				<li><a>Call: 0998052417</a></li>
-  	 				<li><a >Email: LiwondePvthospital@gmail.com</a></li>
+  	 				<li><a>Call: 0888597087</a></li>
+  	 				<li><a >Email: liwondeclinic@yahoo.com</a></li>
   	 				<li><a >Physical Address</a></li>
   	 				<li><a >Open Hours</a></li>
   	 			</ul>

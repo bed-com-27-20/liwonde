@@ -1,45 +1,88 @@
 'use client'
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './style.css';
 import Image from "next/image";
 import icon from '../../images/icon.png';
 
 interface FinanceItem {
     ID: number;
-    firstName: string;
+    FirstName: string;
     LastName: string;
     Treatment: string;
     Amount: string;
-    Paymethod: string;
-    TestOrder: string;
+    PaymentMethod: string;
     Date: string;
 }
 
+const api = "http://localhost:3000/finance"; // Your API endpoint here
+
+const postData = async (url: string, data: FinanceItem[] | FinanceItem) => {
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            return true; // Indicate success
+        } else {
+            return false; // Indicate failure
+        }
+    } catch (error) {
+        console.log("Error connecting to server:", error);
+        return false; // Indicate failure
+    }
+};
+
 export default function Finance() {
     const [finance, setFinance] = useState<FinanceItem[]>([
-        { ID: 1, firstName: '', LastName: '', Treatment: '', Amount: '', Paymethod: '', TestOrder: '', Date: '' }
+        { ID: 1, FirstName: '', LastName: '', Treatment: '', Amount: '', PaymentMethod: '', Date: new Date().toDateString() }
     ]);
+
+    const [dataModified, setDataModified] = useState(false);
     const [totalAmount, setTotalAmount] = useState<number>(0);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (dataModified) {
+                event.preventDefault();
+                event.returnValue = "";
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [dataModified]);
+
+    useEffect(() => {
+        // Calculate total amount whenever finance data changes
+        calculateTotal(finance);
+    }, [finance]);
 
     const addRow = () => {
         const newRow: FinanceItem = {
             ID: finance.length + 1,
-            firstName: '',
+            FirstName: '',
             LastName: '',
             Treatment: '',
             Amount: '',
-            Paymethod: '',
-            TestOrder: '',
-            Date: ''
+            PaymentMethod: '',
+            Date: new Date().toDateString()
         };
         setFinance(prevData => [...prevData, newRow]);
+        setDataModified(true);
     }
 
     const deleteRow = (index: number) => {
         setFinance(prevData => {
             const newData = prevData.filter((row, i) => i !== index);
-            calculateTotal(newData); // Recalculate total after row deletion
+            setDataModified(true);
             return newData;
         });
     }
@@ -48,16 +91,61 @@ export default function Finance() {
         const updatedData = [...finance];
         updatedData[index] = { ...updatedData[index], ...newData };
         setFinance(updatedData);
-
-        // Calculate total amount whenever amount is updated
-        calculateTotal(updatedData);
+        setDataModified(true);
     }
 
     const calculateTotal = (data: FinanceItem[]) => {
-        const total = data.reduce((acc, curr) => acc + parseFloat(curr.Amount || '0'), 0);
+        const currentDate = new Date();
+        const formattedCurrentDate = currentDate.toDateString();
+        const total = data
+            .filter((item) => item.Date === formattedCurrentDate)
+            .reduce((acc, curr) => acc + parseFloat(curr.Amount || '0'), 0);
         setTotalAmount(total);
     }
 
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`;
+    const handleSubmit = async () => {
+        try {
+            // Check if any required fields are empty
+            for (const item of finance) {
+                if (!item.FirstName || !item.LastName || !item.PaymentMethod || !item.Treatment) {
+                    alert("Enter all fields!");
+                    return;
+                }
+            }
+    
+            // Create an array to hold all the data to be saved
+            const dataToSave: FinanceItem[] = [];
+    
+            // Add valid items to the dataToSave array
+            for (const item of finance) {
+                // Check if any required fields are empty again (as the user might have modified them)
+                if (!item.FirstName || !item.LastName || !item.PaymentMethod || !item.Treatment) {
+                    alert("Enter all fields!");
+                    return;
+                }
+                // Add valid items to the dataToSave array
+                dataToSave.push(item);
+            }
+    
+            // Post all data to the server in a single request
+            const success = await postData(api, dataToSave);
+    
+            if (success) {
+                // Once all promises are resolved, reset dataModified
+                setDataModified(false);
+                // Show a single alert for all data saved
+                alert("All data saved successfully");
+            } else {
+                alert("Failed to save data");
+            }
+        } catch (error) {
+            console.log("Error connecting to server:", error);
+            alert("Failed to save data");
+        }
+    };
+    
     return (
         <div>
             <div id="table">
@@ -69,6 +157,7 @@ export default function Finance() {
                 />
                 <div>
                     <h1 id="pharma-head">Finance Records</h1>
+                    <h1 className="tsiku">{formattedDate}</h1>
                 </div>
                 <div className="table-box">
                     <div className="table-row">
@@ -91,9 +180,6 @@ export default function Finance() {
                             <p>Payment Method</p>
                         </div>
                         <div className="table-cell">
-                            <p>Date</p>
-                        </div>
-                        <div className="table-cell">
                             <p>Action</p>
                         </div>
                     </div>
@@ -104,10 +190,12 @@ export default function Finance() {
                         <div className="table-cell">
                             <input
                                 type="number"
-                                id="label"
                                 placeholder="e.g 1"
+                                id="label"
                                 value={row.ID}
-                                // onChange={(event) => updateRow(index, { ID: parseInt(event.target.value) })}
+                                onChange={(event) =>
+                                    updateRow(index, { ...row, ID: parseInt(event.target.value) })
+                                }
                             />
                         </div>
                         <div className="table-cell">
@@ -115,8 +203,10 @@ export default function Finance() {
                                 type="text"
                                 id="label"
                                 placeholder=" e.g damascus"
-                                value={row.firstName}
-                                onChange={(event) => updateRow(index, { firstName: event.target.value })}
+                                value={row.FirstName}
+                                onChange={(e) =>
+                                    updateRow(index, { ...row, FirstName: e.target.value })
+                                }
                             />
                         </div>
                         <div className="table-cell">
@@ -125,7 +215,9 @@ export default function Finance() {
                                 id="label"
                                 placeholder="multiplug"
                                 value={row.LastName}
-                                onChange={(event) => updateRow(index, { LastName: event.target.value })}
+                                onChange={(e) =>
+                                    updateRow(index, { ...row, LastName: e.target.value })
+                                }
                             />
                         </div>
                         <div className="table-cell">
@@ -141,24 +233,23 @@ export default function Finance() {
                             <input
                                 type="number"
                                 id="label"
-                                placeholder="Amount"
+                                placeholder="1000"
                                 value={row.Amount}
                                 onChange={(event) => updateRow(index, { Amount: event.target.value })}
                             />
                         </div>
                         <div className="table-cell">
-                            <select name="" id="type" required>
-                                <option value="">Cash</option>
-                                <option value="">Airtel Money</option>
-                                <option value="">Mpamba</option>
-                                <option value="">Bank</option>
-                            </select>
-                        </div>
-                        <div className="table-cell">
-                            <input
-                                type="date"
+                            <select
+                                value={row.PaymentMethod}
                                 id="label"
-                            />
+                                onChange={(event) => updateRow(index, { PaymentMethod: event.target.value })}
+                            >
+                                <option value="">Select Payment Method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Airtel Money">Airtel Money</option>
+                                <option value="Mpamba">Mpamba</option>
+                                <option value="Bank">Bank</option>
+                            </select>
                         </div>
                         <div className="table-cell">
                             <button className="delete" onClick={() => deleteRow(index)}>Delete</button>
@@ -169,16 +260,16 @@ export default function Finance() {
                 {/* Total row */}
                 <div className="table-row total-row">
                     <div className="table-cell">
-                        Total:
+                        DayTotal:
                     </div>
                     <div className="table-cell">
                         {totalAmount}
                     </div>
-                    <div className="table-cell" ></div>
+                    <div className="table-cell"></div>
                 </div>
 
                 <button onClick={addRow} className="button">Add Row</button>
-                <button className="button1">Save</button>
+                <button onClick={handleSubmit} className="button1">Save</button>
             </div>
         </div>
     );

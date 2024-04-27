@@ -38,13 +38,8 @@ const callouts = [
 ]
 
 const Visit=[
-  {day:'Monday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Tuesday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Wednesday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Thursday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Friday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Surtaday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
-  {day:'Sunday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
+  {day:'Monday-Sunday', time1:'7AM to 9AM', time2:'12PM to 2PM', time3:'5PM to 7PM'},
+
 ]
 
 export default function Example() {
@@ -74,6 +69,7 @@ export default function Example() {
               </div>
             ))}
             <div className='justify-center mt-10 '>
+            <h2 className="text-2xl font-bold text-green-900 text-center">Visiting Hours</h2>
             <div className="table-row">
                         <div className="table-cell">
                             <p>Day</p>

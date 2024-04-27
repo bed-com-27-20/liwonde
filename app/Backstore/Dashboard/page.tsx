@@ -6,13 +6,21 @@ import icon from '../../images/icon.png'
 import Image from "next/image";
 import search from '../images/search.png'
 import { Search } from "react-bootstrap-icons";
+import Login from "../Login/page";
 
-
-export default function Sale(){
+export default function Vitals(){
     
     return(
         <div>
-           
+            <div id="dash">
+                <header>Backstore</header>
+                <ul>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">History</a></li>
+                    <li><a href="Sale">Sales</a></li>
+                    <li><a href="Login">Logout</a></li>
+                </ul>
+            </div>
             <div id="table">
           <div>
           <Image
@@ -23,9 +31,9 @@ export default function Sale(){
                     />
           </div>
             <div id="searchbar">
-                <input type="text"  id="searchbar" placeholder="search for drugs..."
+                <input type="text"  id="searchbar" placeholder="search for available drugs"
             />
-             <Search/>
+      
 
             </div>
             <div className="button-container">
@@ -34,7 +42,7 @@ export default function Sale(){
                 </div>
                 <div>
                     <a href="Record">
-                    <button className="button2">New Stock</button>
+                    <button className="button2">New Day</button>
                     </a>
                   
                 </div>

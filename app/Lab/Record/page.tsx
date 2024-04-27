@@ -1,47 +1,51 @@
-'use client'; // Mark the component as a Client Component
-
-import React, { useState } from "react";
+'use client'
+// use client"; // Mark the component as a Client Component
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import Image from "next/image";
 import icon from "../../images/icon.png";
 
-const API_URL = "https://lph-backend.onrender.com/laboratory";
+const API_URL = "http://localhost:3000/laboratory";
+
+export interface LabItem {
+  ID: number;
+  FirstName: string;
+  LastName: string;
+  PaymentMethod: string;
+  TestOrdered: string;
+  Date: string;
+}
 
 export default function Lab() {
-  // Your component code with useState
-
-  const [FirstName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
-  const [Amount, setAmount] = useState<number>(0); // Corrected type to number
-  const [PaymentMethod, setPaymentMethod] = useState("");
-  const [TestOrdered, setTestOrdered] = useState("");
-
   const [lab, setLab] = useState<LabItem[]>([
     {
       ID: 1,
       FirstName: "",
       LastName: "",
-      Amount: 0,
       PaymentMethod: "",
       TestOrdered: "",
-      Date: "",
+      Date: new Date().toDateString(),
     },
   ]);
 
-  interface LabItem {
-    ID: number;
-    FirstName: string;
-    LastName: string;
-    Amount: number; // Corrected type to number
-    PaymentMethod: string;
-    TestOrdered: string;
-    Date: string;
-  }
+  const [dataModified, setDataModified] = useState(false);
 
-  const postData = async (
-    url: string | URL | Request,
-    data: LabItem // Corrected data type to LabItem
-  ) => {
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (dataModified) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [dataModified]);
+
+  const postData = async (url: string, data: LabItem) => {
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -52,35 +56,29 @@ export default function Lab() {
       });
 
       if (response.ok) {
-        return await response.json();
-        alert("saved")
+        alert("Data saved successfully");
       } else {
-        throw new Error("Error: Table not added, try again");
+        alert("Failed to save data");
       }
     } catch (error) {
-      throw new Error("Server data fetching error: " + error);
-      alert("Server data fetching error")
+      console.log("Error connecting to server:", error);
+      alert("Failed to save data");
     }
   };
 
   const handleSubmit = async () => {
     try {
-      const apiUrl = "https://lph-backend.onrender.com/laboratory";
-      const data: LabItem = {
-        ID: lab.length + 1,
-        FirstName,
-        LastName,
-        Amount,
-        PaymentMethod,
-        TestOrdered,
-        Date: new Date().toDateString(), // Assuming Date is today's date
-      };
+      for (const item of lab) {
+        if (!item.FirstName || !item.LastName || !item.PaymentMethod || !item.TestOrdered) {
+          alert("Enter All fields !");
+          return;
+        }
 
-      const apiResponse = await postData(apiUrl, data);
-      console.log("Table added", apiResponse);
-      alert("Data saved successfully");
+        await postData(API_URL, item);
+      }
+      setDataModified(false); // Reset dataModified after successful submission
     } catch (error) {
-      console.log("Error connecting to server:");
+      console.log("Error connecting to server:", error);
       alert("Failed to save data");
     }
   };
@@ -90,23 +88,28 @@ export default function Lab() {
       ID: lab.length + 1,
       FirstName: "",
       LastName: "",
-      Amount: 0,
       PaymentMethod: "",
       TestOrdered: "",
-      Date: "",
+      Date: new Date().toDateString(),
     };
     setLab((prevData) => [...prevData, newRow]);
+    setDataModified(true);
   };
 
   const deleteRow = (index: number) => {
-    setLab((prevData) => prevData.filter((row, i) => i !== index));
+    setLab((prevData) => prevData.filter((_, i) => i !== index));
+    setDataModified(true);
   };
 
   const updateRow = (index: number, newData: Partial<LabItem>) => {
     const updatedData = [...lab];
     updatedData[index] = { ...updatedData[index], ...newData };
     setLab(updatedData);
+    setDataModified(true);
   };
+
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`;
 
   return (
     <div>
@@ -114,7 +117,10 @@ export default function Lab() {
         <Image src={icon} alt="" width={100} height={100} />
         <div>
           <h1 id="pharma-head">Laboratory</h1>
+          <h1 className="tsiku">{formattedDate}</h1>
+          <br></br>
         </div>
+
         <div className="table-box">
           <div className="table-row">
             <div className="table-cell">
@@ -127,18 +133,12 @@ export default function Lab() {
               <p>LastName</p>
             </div>
             <div className="table-cell">
-              <p>Amount</p>
+              <p>PaymentMethod</p>
             </div>
             <div className="table-cell">
-              <p>Payment Method</p>
+              <p>TestOrdered</p>
             </div>
-            <div className="table-cell">
-              <p>Test Ordered</p>
-            </div>
-            <div className="table-cell">
-              <p>Date</p>
-            </div>
-         
+
             <div className="table-cell">
               <p>Action</p>
             </div>
@@ -149,8 +149,8 @@ export default function Lab() {
             <div className="table-cell">
               <input
                 type="number"
-                id="label"
                 placeholder="e.g 1"
+                id="label"
                 value={row.ID}
                 onChange={(event) =>
                   updateRow(index, { ...row, ID: parseInt(event.target.value) })
@@ -180,51 +180,36 @@ export default function Lab() {
               />
             </div>
             <div className="table-cell">
-              <input
-                type="number" // Assuming Amount is a number field
-                id="label"
-                placeholder="0"
-                value={row.Amount}
-                onChange={(e) =>
-                  updateRow(index, { ...row, Amount: parseInt(e.target.value) })
-                }
-              />
-            </div>
-            <div className="table-cell">
               <select
-                name=""
-                id="type"
-                required
                 value={row.PaymentMethod}
+                id="label"
                 onChange={(e) =>
                   updateRow(index, { ...row, PaymentMethod: e.target.value })
                 }
               >
-                <option value="">Cash</option>
-                <option value="">Airtel Money</option>
-                <option value="">Mpamba</option>
-                <option value="">Bank</option>
+                <option value="select">select option</option>
+                <option value="Cash">Cash</option>
+                <option value="Airtel Money">Airtel Money</option>
+                <option value="Mpamba">Mpamba</option>
+                <option value="Bank">Bank</option>
               </select>
             </div>
             <div className="table-cell">
               <select
-                name=""
-                id="type"
-                required
                 value={row.TestOrdered}
+                id="label"
                 onChange={(e) =>
                   updateRow(index, { ...row, TestOrdered: e.target.value })
                 }
               >
-                <option value="">BP</option>
-                <option value="">TB</option>
-                <option value="">Cancer</option>
-                <option value="">Malaria</option>
+                <option value="select">select option</option>
+                <option value="MRDT">MRDT</option>
+                <option value="FBC">FBC</option>
+                <option value="Urine">Urine</option>
+                <option value="TB">TB</option>
               </select>
             </div>
-            <div className="table-cell">
-             
-            </div>
+
             <div className="table-cell">
               <button className="delete" onClick={() => deleteRow(index)}>
                 Delete

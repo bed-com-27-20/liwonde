@@ -16,7 +16,7 @@ export default function Finance(){
                 <header>Martenity</header>
                 <ul>
                     <li><a href="#">Profile</a></li>
-                    <li><a href="#">Records</a></li>
+                    <li><a href="#">History</a></li>
                     <li><a href="Sale">Sales</a></li>
                     <li><a href="Login">Logout</a></li>
                 </ul>
