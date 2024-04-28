@@ -1,18 +1,26 @@
-import { CheckIcon } from "@heroicons/react/20/solid";
+'use client'
 import Header from "@/componets/navbar";
 import Footer from "@/componets/footer";
 import ScrollToTopButton from "../Scroll/scroll";
+import CheckIcon from '@material-ui/icons/Check';
+import { createContext, useContext } from 'react';
+
+// Create context
+const ExampleContext = createContext(null);
 
 const includedFeatures = ["Cash", "Mpamba", "Airtel Money ", "Medical Scheme"];
 
 export default function Buy() {
+  // Use context
+  const exampleContextValue = useContext(ExampleContext);
+
   return (
     <>
       <Header />
       <div className="mx-auto max-w-10xl px-6 lg:px-8">
         <div className="mx-auto max-w-10xl px-6 lg:px-8">
           <div
-            className="bg-green-400 w-full h-400 justify-center  py-24 sm:py-32"
+            className="bg-green-400 w-full h-400 justify-center py-24 sm:py-32"
             style={{
               backgroundImage:
                 "url(https://i.pinimg.com/564x/bd/bc/0b/bdbc0bda70405b998e163ad879a429f1.jpg)",
@@ -64,11 +72,8 @@ export default function Buy() {
                 className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-gray-600 sm:grid-cols-2 sm:gap-6"
               >
                 {includedFeatures.map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
-                    <CheckIcon
-                      className="h-6 w-5 flex-none text-indigo-600"
-                      aria-hidden="true"
-                    />
+                  <li key={feature} className="flex gap-x-3 items-center">
+                    <CheckIcon className="h-6 w-5 flex-none text-indigo-600" aria-hidden="true" />
                     {feature}
                   </li>
                 ))}

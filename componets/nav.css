@@ -113,8 +113,8 @@
     
 
   .new-links{
-    width: 90%;
-    height: 50vh !important;
+    width: 50%;
+    height: 20vh !important;
     display: flex;
     flex-direction: column;
     position: absolute;
